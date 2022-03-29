@@ -36,14 +36,13 @@ class Game:
         self.log.log_to_file('Round is over!')
 
     def __play_round(self):
-        is_round_over = False
-
-        while not is_round_over:
+        while True:
             char = self.__get_next_char()
             column, row = self.__next_step()
             self.__set_cell_value(char, column, row)
-            is_round_over = self.__is_round_over(char, column, row)
             self.log.show_board(self.__board)
+            if self.__is_round_over(char, column, row):
+                break
 
     def __prepare_game(self):
         self.__set_players_name()
