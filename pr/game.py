@@ -2,12 +2,6 @@ import logger
 
 
 class Game:
-    __board = []
-    __next_char = ''
-    __players = {'x': '', 'o': ''}
-    __is_first_player = True
-    __cell_counter = 0
-    __board_size = len(__board)
     log = logger.Logger
 
     def __init__(self):
@@ -20,13 +14,12 @@ class Game:
 
     def play_game(self):
         self.log.log_to_file('Start of game!')
-        next_game = True
 
+        next_game = True
         while next_game:
             self.__prepare_game()
             self.__round_game()
-            answer = input('New game? (Y/N) ')
-            if answer != 'Y' and answer != 'y':
+            if input('New game? Y/(N or other char): ').lower() != 'y':
                 next_game = False
 
         self.log.log_to_file('Game is over!')
@@ -37,8 +30,7 @@ class Game:
 
         while next_round:
             self.__play_round()
-            answer = input('New round? (Y/N) ')
-            if answer != 'Y' and answer != 'y':
+            if input('New round? Y/(N or other char): ').lower() != 'y':
                 next_round = False
             else:
                 self.__prepare_round()
@@ -68,14 +60,12 @@ class Game:
 
     def __set_players_name(self):
         print('Hi! Let\'s play!')
-        self.__players['x'] = input('Input first player name (it will play with x): ')
-        self.__players['o'] = input('Input second player name (it will play with o): ')
+        self.__players['x'] = input('Input name of first player: ')
+        self.__players['o'] = input('Input name of second player: ')
 
     @staticmethod
     def __get_value(message, down_board, up_board=20):
-        is_incorrect_input = True
-        player_input = 0
-        while is_incorrect_input:
+        while True:
             try:
                 player_input = int(input(message))
             except ValueError:
@@ -84,7 +74,7 @@ class Game:
                 if player_input < down_board or player_input > up_board:
                     print('Incorrect value!')
                 else:
-                    is_incorrect_input = False
+                    break
 
         return player_input
 
@@ -116,7 +106,7 @@ class Game:
             self.__cell_counter -= 1
         else:
             self.__get_next_char()
-            print('Wrong position!')
+            print('Wrong position. Try again!')
 
     def __check_cell(self, column, row):
         return self.__board[column][row] == ' '
@@ -125,17 +115,18 @@ class Game:
         self.__board[column][row] = value
 
     def __is_round_over(self, char, column, row):
-        return self.__check_lines(char, column, row) \
-               or self.__check_diagonals(char, column, row) or self.__check_full()
-
-    def __check_lines(self, char, column, row):
-        result_column = self.__check_column(char, column)
-        result_row = self.__check_row(char, row)
-
-        if result_column or result_row:
+        if self.__check_lines(char, column, row) or self.__check_diagonals(char, column, row):
             self.log.log_to_file(self.__players[self.__next_char] + ' won!')
             return True
+
+        if self.__check_full():
+            self.log.log_to_file('Nobody won!')
+            return True
+
         return False
+
+    def __check_lines(self, char, column, row):
+        return self.__check_column(char, column) or self.__check_row(char, row)
 
     def __check_row(self, char, row):
         for column in range(len(self.__board)):
@@ -176,9 +167,8 @@ class Game:
         for i in range(len(self.__board)):
             if self.__board[i][len(self.__board) - 1 - i] != char:
                 return False
+
         return True
 
     def __check_full(self):
-        if self.__cell_counter == 0:
-            self.log.log_to_file('Nobody won!')
         return self.__cell_counter == 0
