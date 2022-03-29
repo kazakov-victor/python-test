@@ -15,23 +15,21 @@ class Game:
     def play_game(self):
         self.log.log_to_file('Start of game!')
 
-        next_game = True
-        while next_game:
+        while True:
             self.__prepare_game()
             self.__round_game()
             if input('New game? Y/(N or other char): ').lower() != 'y':
-                next_game = False
+                break
 
         self.log.log_to_file('Game is over!')
 
     def __round_game(self):
         self.log.log_to_file('New round!')
-        next_round = True
 
-        while next_round:
+        while True:
             self.__play_round()
             if input('New round? Y/(N or other char): ').lower() != 'y':
-                next_round = False
+                break
             else:
                 self.__prepare_round()
 
