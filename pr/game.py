@@ -91,10 +91,10 @@ class Game:
 
     def __next_step(self):
         print('Step of ' + self.__players[self.__next_char])
-        row = self.__get_value('Enter row position from 1 till ' + str(len(self.__board)) + ': ', 1,
+        row = self.__get_value(f'Enter row position from 1 till {len(self.__board)}: ', 1,
                                len(self.__board)) - 1
-        column = self.__get_value('Enter column position from 1 till ' + str(len(
-            self.__board)) + ': ', 1, len(self.__board)) - 1
+        column = self.__get_value(f'Enter column position from 1 till {len(self.__board)}: ', 1,
+                                  len(self.__board)) - 1
         return column, row
 
     def __set_cell_value(self, value, column, row):
